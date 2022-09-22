@@ -2,22 +2,13 @@ package org.gl.controller;
 
 
 import java.net.URI;
-import java.util.List;
+import java.util.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -37,7 +28,7 @@ import org.gl.service.StudentService;
 @RequestScoped
 public class StudentController {
 
-    //bean instation of service interface
+    //bean instantiation of service interface
     private final StudentService studentService;
 
     //Injection point of service interface
@@ -46,7 +37,7 @@ public class StudentController {
         this.studentService = studentService;
     }
    
-    //method to Get a Student by Id
+    //method to Get a Student by id
     @GET
     @Operation(
         operationId = "getStudent",
@@ -97,7 +88,7 @@ public class StudentController {
         schema = @Schema(implementation = Student.class))
     )
     @Path("/{id}")
-    public Response updatStudent(@PathParam("id") Long id, @Valid Student student) throws StudentUpdateDelete{
+    public Response updateStudent(@PathParam("id") Long id, @Valid Student student) throws StudentUpdateDelete{
          studentService.updateStudent(id, student.toUser());
          return Response.status(204).build();
     }
@@ -134,60 +125,34 @@ public class StudentController {
         return Response.status(204).build();
     }
 
-    @GET
-    @Operation(
-        operationId = "getListStudent",
-        summary = "Get all the students",
-        description = "To Get a List of student"
-    )
-    public Response getAllStudents(){
-        List<Student> students = studentService.getAll();
-        return Response.ok(students).build();
-    }
 
-    @GET
-    @Operation(
-        operationId = "sortStudentByColoumn",
-        summary = "Get all the students with specified coloumn",
-        description = "for example To Get a student sort by their age, names or id"
-    )
-    @Path("sort/{field}")
-    public List<Student> getAllStudents(@PathParam("field") String field){  
-        return studentService.getAll(field);
-    }
-
-    @GET
-    @Operation(
-        operationId = "sortStudentByColoumn",
-        summary = "Get all the students with specified coloumn",
-        description = "for example To Get a student sort by their age, names or id"
-    )
-    @Path("sortDescending/{field}")
-    public List<Student> getAllStudentsDescendingOrder(@PathParam("field") String field){  
-        return studentService.getAllStudentDescendingOrder(field);
-    }
 
 
     @GET
-    @Operation(
-        operationId = "getLimitedStudents",
-        summary = "Get limited students based on the page size",
-        description = "for example To Get a student with page size, Here, pageSize is to denote the no. of students shown and offset is for next page"
-    )
-    @Path("/pagination/{offset}/{pageSize}")
-    public List<Student> getAllStudentswithPages(@PathParam("offset") int offset,@PathParam("pageSize") int pageSize){
-       return studentService.findStudentWithpagination(offset, pageSize);
-    }
+    @Path("allStudentsData")
+    public Response getAllStudent(@QueryParam("field") String field,@QueryParam("names") String names,@QueryParam("offset") int offset,@QueryParam("pageSize") int pageSize) {
 
-    @GET
-    @Operation(
-        operationId = "getStudent",
-        summary = "Get all the students with specified name",
-        description = "for example To Get a student with name shubham put name of student in names string"
-    )
-    @Path("/names/{names}")
-    public List<Student> getAllStudentWithName(@PathParam("names") String names){
-        return studentService.findStudentsWithName(names);
+        try{
+            List<Student> students;
+            students = studentService.getAll(field);
+            if(field == null){
+               students = studentService.getAll();
+            }else{
+                students = studentService.getAllStudentDescendingOrder(field);
+            }
+
+            if(names != null){
+                students = studentService.findStudentsWithName(names);
+            }
+
+            if(pageSize != 0 && offset >= 0){
+                students = studentService.findStudentWithpagination(offset, pageSize);
+            }
+
+            return Response.ok(students).build();
+        }catch (Exception e){
+            return Response.noContent().build();
+        }
     }
 
 }
