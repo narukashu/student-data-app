@@ -4,6 +4,7 @@ package org.gl.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.gl.entity.Marks;
 import org.gl.entity.Student;
 import org.gl.exception.StudentUpdateDelete;
 
@@ -18,7 +19,8 @@ public interface StudentService {
     //Method to insert new Student
     Student saveStudent(Student student);
 
-    Student changeAddress(Long id,Student student) throws StudentUpdateDelete;
+    Marks saveMarks(Marks marks,Long id,Long subId);
+    Student changeStudentData(Long id,Student student) throws StudentUpdateDelete;
 
     boolean deleteStudent(Long id);
 

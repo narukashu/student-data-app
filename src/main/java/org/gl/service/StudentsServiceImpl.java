@@ -6,9 +6,15 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.WebApplicationException;
 
+import org.gl.entity.Marks;
 import org.gl.entity.Student;
+import org.gl.entity.Subjects;
 import org.gl.exception.StudentUpdateDelete;
+import org.gl.mapper.StudentMapper;
+import org.gl.repository.MarksRepository;
+import org.gl.repository.SubjectRepository;
 import org.gl.repository.UserRepository;
 
 import io.quarkus.panache.common.Page;
@@ -19,9 +25,17 @@ public class StudentsServiceImpl implements StudentService{
     //Injecting repository bean in Service class
     private final UserRepository userRepository;
 
+    private final MarksRepository marksRepository;
+
+    private final SubjectRepository subjectRepository;
+
     @Inject
-    public StudentsServiceImpl(UserRepository userRepository) {
+    StudentMapper studentMapper;
+    @Inject
+    public StudentsServiceImpl(UserRepository userRepository, MarksRepository marksRepository, SubjectRepository subjectRepository) {
         this.userRepository = userRepository;
+        this.marksRepository = marksRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     //method to get the student data using Id and using findByIdOptional present in repository interface
@@ -34,7 +48,7 @@ public class StudentsServiceImpl implements StudentService{
         return userRepository.findByIdOptional(id).orElseThrow(() -> new StudentUpdateDelete(""));
     }
 
-    //method to update student data whose is is present
+    //method to update student data whose is present
     @Transactional
     @Override
     public Student updateStudent(Long id, Student student) throws StudentUpdateDelete {
@@ -53,6 +67,16 @@ public class StudentsServiceImpl implements StudentService{
         userRepository.persist(student);
         return student;
     }
+    @Transactional
+    @Override
+    public Marks saveMarks(Marks marks,Long id,Long subId) {
+        Student student = userRepository.findById(id);
+        Subjects subjects = subjectRepository.findById(subId);
+        marks.setStudent(student);
+        marks.setSubjects(subjects);
+        marksRepository.persist(marks);
+        return marks;
+    }
 
     @Transactional
     @Override
@@ -62,10 +86,13 @@ public class StudentsServiceImpl implements StudentService{
 
     @Override
     @Transactional
-    public Student changeAddress(Long id,Student student) throws StudentUpdateDelete {
-        Student exiStudent =  getStudentsById(id);
-        exiStudent.setAddress(student.getAddress());
-        return student;
+    public Student changeStudentData(Long id,Student student) throws StudentUpdateDelete {
+        Student entity =  getStudentsById(id);
+        if(entity == null) {
+            throw new WebApplicationException("Student with id " + id + " does not exist.", 404);
+        }
+        entity = student;
+        return studentMapper.toStudent(entity);
     }
 
     @Override

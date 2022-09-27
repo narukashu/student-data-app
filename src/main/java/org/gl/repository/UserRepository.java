@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.gl.entity.Marks;
 import org.gl.entity.Student;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;

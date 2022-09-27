@@ -98,12 +98,12 @@ public class StudentControllerTest {
     }
 
     @Test
-    void testUpdatStudent() throws StudentUpdateDelete {
-      Student updatStudent = new Student();
-      updatStudent.setNames("Yash");
+    void testUpdateStudent() throws StudentUpdateDelete {
+      Student updateStudent = new Student();
+      updateStudent.setNames("Yash");
       Mockito.when(userRepository.findByIdOptional(1L)).thenReturn(Optional.of(student));
 
-      Response response = studentController.updateStudent(1L, updatStudent);
+      Response response = studentController.updateStudent(1L, updateStudent);
 
       assertNotNull(response);
       assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
@@ -121,7 +121,7 @@ public class StudentControllerTest {
     }
 
 /*    @Test
-    void testgetAllStudents(){
+    void testGetAllStudents(){
       List<Student> students = new ArrayList<>();
       students.add(student);
       Mockito.when(userRepository.listAll()).thenReturn(students);

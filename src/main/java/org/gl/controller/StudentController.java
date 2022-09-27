@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.gl.entity.Marks;
 import org.gl.entity.Student;
 import org.gl.exception.StudentUpdateDelete;
 import org.gl.service.StudentService;
@@ -74,6 +75,13 @@ public class StudentController {
         return Response.created(URI.create("/students/" + student.getId())).build();
     }
 
+    @POST
+    @Path("/Marks/{id}/{subId}")
+    public Response insertMarks(@Valid Marks marks,@PathParam("id") Long id,@PathParam("subId") Long subId){
+        studentService.saveMarks(marks,id,subId);
+        return Response.created(URI.create("/marks/" + marks.getId())).build();
+    }
+
     //method to Update a student
     @PUT
     @Operation(
@@ -119,11 +127,14 @@ public class StudentController {
         summary = "To change the Address of the student",
         description = "Change the student address only"
     )
-    @Path("/changeAddress/{id}")
-    public Response changeAddress(@PathParam("id") Long id, @Valid Student student) throws StudentUpdateDelete{
-        studentService.changeAddress(id, student);
+    @Path("/changeStudentData/{id}")
+    public Response changeStudentDataPatch(@PathParam("id") Long id, @Valid Student student) throws StudentUpdateDelete{
+        studentService.changeStudentData(id, student);
         return Response.status(204).build();
     }
+
+
+
 
 
 

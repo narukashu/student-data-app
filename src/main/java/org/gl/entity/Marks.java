@@ -1,5 +1,7 @@
 package org.gl.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,10 +17,12 @@ public class Marks {
 
     @OneToOne(targetEntity = Student.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "student_fk",referencedColumnName = "id")
+    @JsonIgnore
     private Student student;
 
     @OneToOne(targetEntity = Subjects.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "subject_fk1",referencedColumnName = "id")
+    @JsonIgnore
     private Subjects subjects;
     
     public int getId() {
@@ -63,6 +67,13 @@ public class Marks {
     public Marks() {
     }
 
-    
+    public Marks toMarks(){
+        Marks marks = new Marks();
+        marks.setStudent(student);
+        marks.setSubjects(subjects);
+        marks.setMark(mark);
+        return marks;
+    }
+
    
 }
