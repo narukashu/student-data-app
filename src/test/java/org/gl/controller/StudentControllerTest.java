@@ -6,12 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.gl.entity.Student;
 import org.gl.exception.StudentNotFoundException;
@@ -61,11 +63,11 @@ public class StudentControllerTest {
       newStudent.setNames("Shubham");
       newStudent.setAge(20);
       newStudent.setAddress("Kalwar");
+
       Response response = studentController.createUser(newStudent);
       assertNotNull(response);
-      assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-      assertNotNull(response.getLocation());
-      assertNull(response.getEntity());
+      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      assertNotNull(response.getEntity());
     }
 
 

@@ -72,7 +72,7 @@ public class StudentController {
     )
     public Response createUser(@Valid Student student)  {
         studentService.saveStudent(student.toUser());
-        return Response.created(URI.create("/students/" + student.getId())).build();
+        return Response.ok(student).build();
     }
 
     @POST
@@ -144,22 +144,22 @@ public class StudentController {
     public Response getAllStudent(@QueryParam("field") String field,@QueryParam("names") String names,@QueryParam("offset") int offset,@QueryParam("pageSize") int pageSize) {
 
         try{
+            System.out.println(pageSize);
             List<Student> students;
-            students = studentService.getAll(field);
-            if(field == null){
-               students = studentService.getAll();
-            }else{
-                students = studentService.getAllStudentDescendingOrder(field);
-            }
 
-            if(names != null){
-                students = studentService.findStudentsWithName(names);
-            }
-
-            if(pageSize != 0 && offset >= 0){
-                students = studentService.findStudentWithpagination(offset, pageSize);
-            }
-
+                if (field != null && names == null) {
+                    students = studentService.getAll(field);
+                } else {
+                    if (field == null && names != null) {
+                        students = studentService.findStudentsWithName(names);
+                    } else {
+                        if(field == null && pageSize >= 0){
+                            students = studentService.findStudentWithPagination(offset, pageSize);
+                        }else {
+                            students = studentService.getAll();
+                        }
+                    }
+                }
             return Response.ok(students).build();
         }catch (Exception e){
             return Response.noContent().build();
