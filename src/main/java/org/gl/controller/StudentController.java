@@ -5,12 +5,19 @@ import java.util.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonMergePatch;
 import javax.json.JsonPatch;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import com.github.fge.jsonpatch.JsonPatchException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -19,7 +26,11 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.gl.dto.StudentDto;
 import org.gl.entity.Student;
+import org.gl.exception.StudentNotFoundException;
 import org.gl.exception.StudentUpdateDelete;
+import org.gl.mapper.JsonMergePatchMapper;
+import org.gl.mapper.JsonPatchMapper;
+import org.gl.repository.UserRepository;
 import org.gl.service.StudentService;
 
 
@@ -33,10 +44,17 @@ public class StudentController {
     //bean instantiation of service interface
     private final StudentService studentService;
 
+    private ObjectMapper objectMapper;
+    private final UserRepository userRepository;
+    private final JsonPatchMapper<Student> mapper;
     //Injection point of service interface
+    private final JsonMergePatchMapper<Student> mergeMapper;
     @Inject
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, UserRepository userRepository, JsonPatchMapper<Student> mapper, JsonMergePatchMapper<Student> mergeMapper) {
         this.studentService = studentService;
+        this.userRepository = userRepository;
+        this.mapper = mapper;
+        this.mergeMapper = mergeMapper;
     }
 
     //method to Get a Student by id
@@ -116,6 +134,22 @@ public class StudentController {
     }
 
 
+   /*  @PATCH
+   @Operation(
+            operationId = "changeStudentAddress",
+            summary = "To change the Address of the student",
+            description = "Change the student address only"
+    )
+    @Path("/changeStudentData/{id}")
+    public Response changeStudentDataPatch(@PathParam("id") Long id, @RequestBody JsonPatch patch) throws StudentUpdateDelete, JsonPatchException, JsonProcessingException, StudentNotFoundException {
+        Student student = studentService.getStudentsById(id);
+
+        Student studentPatched= mapper.apply(student,patch);
+
+        userRepository.save(student);
+        return Response.noContent().build();
+    }*/
+
     @PATCH
     @Operation(
             operationId = "changeStudentAddress",
@@ -123,9 +157,22 @@ public class StudentController {
             description = "Change the student address only"
     )
     @Path("/changeStudentData/{id}")
-    public Response changeStudentDataPatch(@PathParam("id") Long id, @RequestBody JsonPatch patch)  {
-        return null;
+    public Response updateStudentDataPatch(@PathParam("id") Long id, @RequestBody JsonPatch patch) throws StudentUpdateDelete, JsonPatchException, JsonProcessingException, StudentNotFoundException {
+        Student student = userRepository.findOne(id);
+        /*Student studentPatched= mapper.apply(student,patch);*/
+
+        Student studentPatched = applyPatchToCustomer(patch,student);
+
+        userRepository.save(student);
+        return Response.noContent().build();
     }
+    private Student applyPatchToCustomer(
+            JsonPatch patch, Student targetCustomer) throws JsonPatchException, JsonProcessingException {
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetCustomer, JsonNode.class));
+        return objectMapper.treeToValue(patched, Student.class);
+    }
+
+
 
 
     @GET

@@ -21,7 +21,7 @@ public interface StudentService {
     //Method to insert new Student
     Student saveStudent(Student student);
 
-    Student changeStudentData(Student student) throws StudentUpdateDelete;
+    Student changeStudentData(Long id) throws StudentUpdateDelete;
 
     boolean deleteStudent(Long id);
 

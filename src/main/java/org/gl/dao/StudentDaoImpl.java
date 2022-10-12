@@ -61,12 +61,7 @@ public class StudentDaoImpl implements StudentDao{
         return userRepository.deleteById(id);
     }
 
-    @Override
-    @Transactional
-    public Student changeStudentData(Long id, Map<String, Object> updates) throws StudentUpdateDelete {
 
-        return null;
-    }
 
     @Override
     public List<Student> getAll() {
@@ -117,5 +112,12 @@ public class StudentDaoImpl implements StudentDao{
         }
         studentDto.setAverageMarks(sum/count);
         return studentDto;
+    }
+
+    @Override
+    @Transactional
+    public Student changeStudentData(Long id) throws StudentUpdateDelete {
+
+        return null;
     }
 }

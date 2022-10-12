@@ -58,8 +58,8 @@ public class StudentsServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public Student changeStudentData(Student student) throws StudentUpdateDelete {
-        return null;
+    public Student changeStudentData(Long id) throws StudentUpdateDelete {
+        return studentDao.changeStudentData(id);
     }
 
     @Override

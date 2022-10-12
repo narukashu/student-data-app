@@ -1,3 +1,4 @@
+
 package org.gl.exceptionhandler;
 
 
@@ -8,9 +9,10 @@ import javax.ws.rs.ext.Provider;
 import org.gl.exception.StudentNotFoundException;
 import org.gl.exception.StudentUpdateDelete;
 //Exception handler class to set the response
- 
+ /*
 @Provider
 public class ExceptionHandler implements ExceptionMapper<Exception>{
+
     //set response if status not found
     @Override
     public Response toResponse(Exception exception) {
@@ -43,4 +45,5 @@ public static final class ErrorResponseBody {
         return message;
     }
 }
-}
+*/
+
