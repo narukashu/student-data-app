@@ -4,6 +4,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import org.gl.dao.StudentDao;
 import org.gl.entity.Student;
+import org.gl.entity.Subjects;
 import org.gl.exception.StudentUpdateDelete;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
 
 @QuarkusTest
 public class StudentServiceTest {
@@ -39,6 +38,12 @@ public class StudentServiceTest {
         student.setAddress("Kalwar Road");
         student.setAge(20);
 
+        Subjects subjects = new Subjects();
+        subjects.setId(5L);
+        subjects.setSubjectName("Maths");
+
+
+
     }
 
     @Test
@@ -52,6 +57,7 @@ public class StudentServiceTest {
         assertEquals(student1.getNames(),student.getNames());
     }
 
+
     @Test
     void getStudentById() throws StudentUpdateDelete {
         Mockito.when(studentDao.getStudentsById(5L)).thenReturn(student);
@@ -63,39 +69,25 @@ public class StudentServiceTest {
     }
 
     @Test
+    void getStudentsById() {
+        Mockito.when(studentDao.getStudentById(5L)).thenReturn(Optional.of(student));
+
+        Optional<Student> student1 = studentService.getStudentById(5L);
+        assertTrue(student1.isPresent());
+    }
+
+    @Test
     void updateStudent() throws StudentUpdateDelete {
         Student updateStudent = new Student();
         updateStudent.setNames("Wash");
-        Mockito.when(studentDao.getStudentById(student.getId())).thenReturn(Optional.of(student));
-        studentService.updateStudent(5L,updateStudent);
-        verify(studentDao).saveStudent(updateStudent);
-        verify(studentDao).getStudentById(student.getId());
+        Mockito.when(studentDao.updateStudent(student.getId(),updateStudent)).thenReturn(student);
+        Student student1 = studentService.updateStudent(5L,updateStudent);
+        assertNotNull(student1);
+
     }
-
-/*
-
-
-        verify(userRepository).findById(user.getId());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void should_throw_exception_when_user_does'nt_exist() {
-        User user = new User();
-        user.setId(89L);
-        user.setName("Test Name");
-
-        User newUser = new User();
-        newUser.setId(90L);
-        user.setName("New Test Name");
-
-        given(userRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
-        updateUserService.updateUser(user.getId(), newUser);
-    }
-}
-    */
-
     @Test
-    void changeAddress() {
+    void changeStudentData(){
+
     }
 
     @Test

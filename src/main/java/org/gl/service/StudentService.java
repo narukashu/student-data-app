@@ -4,7 +4,7 @@ package org.gl.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.gl.entity.Marks;
+import org.gl.dto.StudentDto;
 import org.gl.entity.Student;
 import org.gl.exception.StudentUpdateDelete;
 
@@ -21,8 +21,7 @@ public interface StudentService {
     //Method to insert new Student
     Student saveStudent(Student student);
 
-    Marks saveMarks(Marks marks,Long id,Long subId);
-    Student changeStudentData(Long id,Student student) throws StudentUpdateDelete;
+    Student changeStudentData(Student student) throws StudentUpdateDelete;
 
     boolean deleteStudent(Long id);
 
@@ -35,4 +34,11 @@ public interface StudentService {
     List<Student> findStudentWithPagination(int offset,int pageSize);
 
     List<Student> findStudentsWithName(String names);
+
+
+
+    // demo method
+
+    /*List<StudentDto> fetchAllStudents();*/
+    StudentDto fetchAllStudentsByDto(Long id) throws StudentUpdateDelete;
 }

@@ -1,10 +1,12 @@
 package org.gl.dao;
 
-import org.gl.entity.Marks;
+import org.gl.dto.StudentDto;
 import org.gl.entity.Student;
 import org.gl.exception.StudentUpdateDelete;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface StudentDao {
@@ -17,11 +19,11 @@ public interface StudentDao {
     //Method to insert new Student
     Student saveStudent(Student student);
 
-    Marks saveMarks(Marks marks, Long id, Long subId);
-    Student changeStudentData(Long id,Student student) throws StudentUpdateDelete;
+    Student changeStudentData(Long id, Map <String, Object> updates) throws StudentUpdateDelete;
 
     boolean deleteStudent(Long id);
 
+    @SqlUpdate("SELECT * FROM \"marks\" ")
     List<Student> getAll();
 
     List<Student>  getAll(String field);
@@ -31,4 +33,8 @@ public interface StudentDao {
     List<Student> findStudentWithPagination(int offset,int pageSize);
 
     List<Student> findStudentsWithName(String names);
+
+    StudentDto fetchStudentWithAverageMarks(Long id) throws StudentUpdateDelete;
+
+
 }

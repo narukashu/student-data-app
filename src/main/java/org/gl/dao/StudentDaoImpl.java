@@ -2,36 +2,28 @@ package org.gl.dao;
 
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import org.gl.dto.StudentDto;
 import org.gl.entity.Marks;
 import org.gl.entity.Student;
 import org.gl.entity.Subjects;
 import org.gl.exception.StudentUpdateDelete;
-import org.gl.repository.MarksRepository;
-import org.gl.repository.SubjectRepository;
 import org.gl.repository.UserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.WebApplicationException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
 public class StudentDaoImpl implements StudentDao{
 
-    private final UserRepository userRepository;
-
-    private final MarksRepository marksRepository;
-
-    private final SubjectRepository subjectRepository;
-
     @Inject
-    public StudentDaoImpl(UserRepository userRepository, MarksRepository marksRepository, SubjectRepository subjectRepository) {
-        this.userRepository = userRepository;
-        this.marksRepository = marksRepository;
-        this.subjectRepository = subjectRepository;
-    }
+    UserRepository userRepository;
+
+
+
 
     @Override
     public Optional<Student> getStudentById(Long id) {
@@ -62,16 +54,6 @@ public class StudentDaoImpl implements StudentDao{
         userRepository.persist(student);
         return student;
     }
-    @Transactional
-    @Override
-    public Marks saveMarks(Marks marks, Long id, Long subId) {
-        Student student = userRepository.findById(id);
-        Subjects subjects = subjectRepository.findById(subId);
-        marks.setStudent(student);
-        marks.setSubjects(subjects);
-        marksRepository.persist(marks);
-        return marks;
-    }
 
     @Transactional
     @Override
@@ -81,17 +63,14 @@ public class StudentDaoImpl implements StudentDao{
 
     @Override
     @Transactional
-    public Student changeStudentData(Long id,Student student) throws StudentUpdateDelete {
-        Student entity =  getStudentsById(id);
-        if(entity == null) {
-            throw new WebApplicationException("Student with id " + id + " does not exist.", 404);
-        }
-        entity = student;
-        return entity;
+    public Student changeStudentData(Long id, Map<String, Object> updates) throws StudentUpdateDelete {
+
+        return null;
     }
 
     @Override
     public List<Student> getAll() {
+
         return this.userRepository.listAll();
     }
 
@@ -118,5 +97,25 @@ public class StudentDaoImpl implements StudentDao{
         return userRepository.findByNames(names);
     }
 
-
+    @Override
+    public StudentDto fetchStudentWithAverageMarks(Long id) throws StudentUpdateDelete {
+        Student existingStudent = getStudentsById(id);
+        StudentDto studentDto = new StudentDto();
+        studentDto.setId(existingStudent.getId());
+        studentDto.setNames(existingStudent.getNames());
+        studentDto.setAge(existingStudent.getAge());
+        studentDto.setAddress(existingStudent.getAddress());
+        studentDto.setSubjects(existingStudent.getSubjects());
+        List<Subjects> ls = existingStudent.getSubjects();
+        int sum = 0;
+        int count = 0;
+        for (Subjects l : ls) {
+            Marks n = l.getMarks();
+            int m = n.getMark();
+            sum += m;
+            count++;
+        }
+        studentDto.setAverageMarks(sum/count);
+        return studentDto;
+    }
 }
