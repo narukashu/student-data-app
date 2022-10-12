@@ -2,21 +2,16 @@ package org.gl.controller;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import org.gl.entity.Student;
-import org.gl.exception.StudentNotFoundException;
 import org.gl.exception.StudentUpdateDelete;
 import org.gl.repository.UserRepository;
 
@@ -73,7 +68,7 @@ public class StudentControllerTest {
 
     //test case for get the user
     @Test
-    void testGetStudent() throws StudentNotFoundException {
+    void testGetStudent()  {
         
         Mockito.when(userRepository.findByIdOptional(1L)).thenReturn(Optional.of(student));
 
@@ -88,7 +83,7 @@ public class StudentControllerTest {
 
     //test case for get the user
     @Test
-    void testGetStudentKo() throws StudentNotFoundException {
+    void testGetStudentKo() {
         
         Mockito.when(userRepository.findByIdOptional(11L)).thenReturn(Optional.empty());
 
@@ -122,18 +117,4 @@ public class StudentControllerTest {
       assertNull(response.getEntity());
     }
 
-/*    @Test
-    void testGetAllStudents(){
-      List<Student> students = new ArrayList<>();
-      students.add(student);
-      Mockito.when(userRepository.listAll()).thenReturn(students);
-      Response response = studentController.getAllStudent();
-      assertNotNull(response);
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      assertNotNull(response.getEntity());
-      List<Student> entity = (List<Student>) response.getEntity();
-      assertFalse(entity.isEmpty());
-      assertEquals("Shubham", entity.get(0).getNames());
-
-    }*/
 }

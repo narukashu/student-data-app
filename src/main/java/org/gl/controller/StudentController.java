@@ -160,7 +160,6 @@ public class StudentController {
     public StudentDto fetchAllStudents(@PathParam("id") Long id) throws StudentUpdateDelete {
 
        return studentService.fetchAllStudentsByDto(id);
-        /*return this.studentService.fetchAllStudents();*/
     }
 }
 

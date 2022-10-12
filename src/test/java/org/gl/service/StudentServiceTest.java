@@ -39,7 +39,7 @@ public class StudentServiceTest {
         student.setAge(20);
 
         Subjects subjects = new Subjects();
-        subjects.setId(5L);
+        subjects.setSubId(5L);
         subjects.setSubjectName("Maths");
 
 
