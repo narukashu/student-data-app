@@ -134,7 +134,7 @@ public class StudentController {
     }
 
 
-   /*  @PATCH
+     @PATCH
    @Operation(
             operationId = "changeStudentAddress",
             summary = "To change the Address of the student",
@@ -148,9 +148,9 @@ public class StudentController {
 
         userRepository.save(student);
         return Response.noContent().build();
-    }*/
+    }
 
-    @PATCH
+/*    @PATCH
     @Operation(
             operationId = "changeStudentAddress",
             summary = "To change the Address of the student",
@@ -159,18 +159,18 @@ public class StudentController {
     @Path("/changeStudentData/{id}")
     public Response updateStudentDataPatch(@PathParam("id") Long id, @RequestBody JsonPatch patch) throws StudentUpdateDelete, JsonPatchException, JsonProcessingException, StudentNotFoundException {
         Student student = userRepository.findOne(id);
-        /*Student studentPatched= mapper.apply(student,patch);*/
+        *//*Student studentPatched= mapper.apply(student,patch);*//*
 
         Student studentPatched = applyPatchToCustomer(patch,student);
 
         userRepository.save(student);
         return Response.noContent().build();
-    }
-    private Student applyPatchToCustomer(
+    }*/
+ /*   private Student applyPatchToCustomer(
             JsonPatch patch, Student targetCustomer) throws JsonPatchException, JsonProcessingException {
         JsonNode patched = patch.apply(objectMapper.convertValue(targetCustomer, JsonNode.class));
         return objectMapper.treeToValue(patched, Student.class);
-    }
+    }*/
 
 
 
@@ -179,8 +179,7 @@ public class StudentController {
     @Path("allStudentsData")
     public Response getAllStudent(@QueryParam("field") String field, @QueryParam("names") String names, @QueryParam("offset") int offset, @QueryParam("pageSize") int pageSize) {
 
-        try {
-            System.out.println(pageSize);
+        try {   
             List<Student> students;
 
             if (field != null && names == null) {

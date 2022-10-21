@@ -44,7 +44,7 @@ public class StudentsServiceImpl implements StudentService {
     }
 
     //Method to insert new Student
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRED)
     @Override
     public Student saveStudent(Student student) {
         return studentDao.saveStudent(student);

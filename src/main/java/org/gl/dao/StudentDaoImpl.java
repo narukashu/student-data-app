@@ -13,7 +13,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -103,7 +102,7 @@ public class StudentDaoImpl implements StudentDao{
         studentDto.setSubjects(existingStudent.getSubjects());
         List<Subjects> ls = existingStudent.getSubjects();
         int sum = 0;
-        int count = 0;
+        int count = 1;
         for (Subjects l : ls) {
             Marks n = l.getMarks();
             int m = n.getMark();

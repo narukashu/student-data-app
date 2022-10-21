@@ -45,6 +45,7 @@ public class Student{
     @JoinColumn(name = "stu_fk", referencedColumnName = "id")
     private List<Subjects> subjects;
 
+    
 
 
     public Student toUser() {
