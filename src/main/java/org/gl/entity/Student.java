@@ -1,12 +1,14 @@
 package org.gl.entity;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.smallrye.openapi.runtime.util.StringUtil;
 import lombok.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -55,5 +57,12 @@ public class Student{
         user.setNames(names);
         user.setSubjects(subjects);
         return user;
+    }
+
+    @Transient
+    public io.quarkus.example.Student createProto()
+    {
+        io.quarkus.example.Student.Builder builder = io.quarkus.example.Student.newBuilder();
+        return builder.setName(names).setAddress(address).setId(id).setAge(age).build();
     }
 }

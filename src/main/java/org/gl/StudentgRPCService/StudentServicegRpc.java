@@ -1,14 +1,17 @@
 package org.gl.StudentgRPCService;
 
+import com.google.protobuf.Int64Value;
 import io.grpc.stub.StreamObserver;
-import io.quarkus.example.Student;
-import io.quarkus.example.StudentDataGrpc;
-import io.quarkus.example.Subjects;
+import io.quarkus.example.*;
 import io.quarkus.grpc.GrpcService;
+import io.smallrye.common.annotation.NonBlocking;
 import org.gl.entity.Marks;
+import org.gl.exception.StudentUpdateDelete;
+import org.gl.repository.UserRepository;
 import org.gl.service.StudentService;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +21,16 @@ public class StudentServicegRpc extends StudentDataGrpc.StudentDataImplBase {
 
     private final StudentService studentService;
 
+    private final UserRepository userRepository;
+
     @Inject
-    public StudentServicegRpc(StudentService studentService) {
+    public StudentServicegRpc(StudentService studentService, UserRepository userRepository) {
         this.studentService = studentService;
+        this.userRepository = userRepository;
     }
 
     @Override
+    @Transactional
     public void create(Student student, StreamObserver<Student> responseObserver){
         Long id = student.getId();
         String name = student.getName();
@@ -55,4 +62,18 @@ public class StudentServicegRpc extends StudentDataGrpc.StudentDataImplBase {
         responseObserver.onCompleted();
 
     }
+
+    @Override
+    @Transactional
+    public void findById(Int64Value request, StreamObserver<Student> responseObserver){
+        org.gl.entity.Student studentEntity = null;
+        try {
+            studentEntity = studentService.getStudentsById(request.getValue());
+        } catch (StudentUpdateDelete e) {
+            throw new RuntimeException(e);
+        }
+        responseObserver.onNext(studentEntity.createProto());
+        responseObserver.onCompleted();
+    }
+
 }

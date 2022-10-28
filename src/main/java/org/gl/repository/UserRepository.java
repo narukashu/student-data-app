@@ -42,4 +42,6 @@ public class UserRepository implements PanacheRepository<Student>{
                 .findFirst()
                 .orElseThrow(() -> new StudentNotFoundException("Person with id {} not found"));
     }
+
+
 }

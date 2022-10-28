@@ -3,12 +3,20 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "io.quarkus.example";
 option java_outer_classname = "StudentProto";
+option objc_class_prefix = "HLW";
 
 package student;
+
+import "main.proto";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
 
 
 service StudentData{
   rpc create (Student) returns (Student) {};
+  rpc findById (google.protobuf.Int64Value) returns (Student) {};
+  rpc update(Student) returns (Student){};
 }
 
 message Student{
@@ -18,7 +26,10 @@ message Student{
   string address = 4;
   repeated Subjects subjects = 5;
 }
-
+message StudentList {
+  repeated Student resultList=1;
+  google.protobuf.Int64Value resultCount=2;
+}
 message Subjects{
   string name = 1;
   Marks mark = 2;
@@ -27,3 +38,4 @@ message Subjects{
 message Marks{
   int32 marks = 1;
 }
+
