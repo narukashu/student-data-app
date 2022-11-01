@@ -1,6 +1,7 @@
 package org.gl.entity;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,6 +64,12 @@ public class Student{
     public io.quarkus.example.Student createProto()
     {
         io.quarkus.example.Student.Builder builder = io.quarkus.example.Student.newBuilder();
+
+        for(int i = 0;i<subjects.size();i++){
+            System.out.println(subjects.get(i).getSubjectName());
+        }
+
+
         return builder.setName(names).setAddress(address).setId(id).setAge(age).build();
     }
 }
